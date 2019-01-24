@@ -11,11 +11,11 @@ int x=0;
 int fx=0;
 long long temp = 0;
 long long humidity=0;
-int[10] arrtemp;
-int[10] arrhumid;
-int[10] arrtimhour;
-int[10] arrtimmin;
-
+int arrtemp[10];
+int arrhumid[10];
+int arrtimhour[10];
+int arrtimmin[10];
+int hourinit,minuteinit,hourfin,minutefin;
 byte decToBcd(byte val){
   return( (val/10*16) + (val%10) );
 }
@@ -60,18 +60,27 @@ byte *year){
   *year = bcdToDec(Wire.read());
 }
 
-int[] retime(){
-  int[2] tim;
-  byte minute, hour;
+int rehour(){
+  int tim;
+  byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
   // retrieve data from DS3231
-  readDS3231time(&minute, &hour);
+  readDS3231time(&second, &minute, &hour, &dayOfWeek,&dayOfMonth, &month,&year);
   // send it to the serial monitor
   hour = (int)hour;
-  minute=(int)minute;
-  tim[0]=hour;
-  tim[1]=minute;
+    tim=hour;
   return tim;
   }
+
+int remin(){
+  int tim;
+  byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
+  // retrieve data from DS3231
+  readDS3231time(&second, &minute, &hour, &dayOfWeek,&dayOfMonth, &month,&year);
+  // send it to the serial monitor
+  minute=(int)minute;
+  tim=minute;
+  return tim;
+  }  
 
 void displayTime(){
   byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
@@ -234,7 +243,6 @@ void setup() {
       lcd.init(); //initialize the lcd
       lcd.backlight(); //open the backlight
       pinMode(sensor, INPUT);
-      rtc.begin();
       Serial.begin(9600);
       delay(500);//Delay to let system boot
       Serial.println("DHT11 Humidity & temperature Sensor\n\n");
@@ -246,20 +254,30 @@ void loop() {
   // put your main code here, to run repeatedly:
       val = digitalRead(sensor);   // read sensor value
     while(val!=HIGH){
-      int hourinit=retime()[0];
-      int minuteinit=retime()[1];
+      hourinit=rehour();
+      minuteinit=remin();
       fx++;
       temp+=DHT.temperature;
       humidity+=DHT.humidity;
-      delay(5000);
+
     }
-    int hourfin=retime()[0];
-    int minutefin=retime()[1];
+    hourfin=rehour();
+    minutefin=remin();
     x++;
     arrtemp[x] = temp/fx;
     arrhumid[x] = humidity/fx;
     arrtimhour[x] =hourfin-hourinit ;
     arrtimmin[x] = minutefin-minuteinit;
+    for(int i = 0; i < 10; i++)
+{
+  Serial.println(arrtemp[i]);
+    Serial.println(arrhumid[i]);
+    Serial.println(arrtimhour[i]);
+    Serial.println(arrtimmin[i]);
+}
+
+    
+    
     temp=0;
     humidity=0;
     fx=0;
