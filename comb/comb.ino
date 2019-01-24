@@ -9,6 +9,7 @@ int sensor = 2;
 int val = 0;                 // variable to store the sensor status (value)
 int x=0;
 int fx=0;
+int y=0;
 long long temp = 0;
 long long humidity=0;
 int arrtemp[10];
@@ -254,27 +255,30 @@ void loop() {
   // put your main code here, to run repeatedly:
       val = digitalRead(sensor);   // read sensor value
     while(val!=HIGH){
+      if(y==0){
       hourinit=rehour();
       minuteinit=remin();
-      fx++;
-      temp+=DHT.temperature;
-      humidity+=DHT.humidity;
-
+      y=1;
+      temp=DHT.temperature;
+      humidity+=DHT.humidity;}
+      val = digitalRead(sensor);
     }
-    hourfin=rehour();
-    minutefin=remin();
-    x++;
-    arrtemp[x] = temp/fx;
-    arrhumid[x] = humidity/fx;
-    arrtimhour[x] =hourfin-hourinit ;
-    arrtimmin[x] = minutefin-minuteinit;
-    for(int i = 0; i < 10; i++)
-{
-  Serial.println(arrtemp[i]);
-    Serial.println(arrhumid[i]);
-    Serial.println(arrtimhour[i]);
-    Serial.println(arrtimmin[i]);
-}
+    if(y==1)
+    {
+      hourfin=rehour();
+      minutefin=remin();
+      x++;
+      arrtemp[x] = temp;
+      arrhumid[x] = humidity;
+      arrtimhour[x] =hourfin-hourinit ;
+      arrtimmin[x] = minutefin-minuteinit;
+      y=0;
+    
+    Serial.println(arrtemp[x]);
+    Serial.println(arrhumid[x]);
+    Serial.println(arrtimhour[x]);
+    Serial.println(arrtimmin[x]);
+    }  
 
     
     
