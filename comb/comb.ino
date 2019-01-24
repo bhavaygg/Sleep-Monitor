@@ -5,7 +5,16 @@
 #define dht_apin A0 // Analog Pin sensor is connected to
 dht DHT;
 LiquidCrystal_I2C lcd(0x27,16,2);
-
+int sensor = 2;
+int val = 0;                 // variable to store the sensor status (value)
+int x=0;
+int fx=0;
+long long temp = 0;
+long long humidity=0;
+int[10] arrtemp;
+int[10] arrhumid;
+int[10] arrtimhour;
+int[10] arrtimmin;
 
 byte decToBcd(byte val){
   return( (val/10*16) + (val%10) );
@@ -50,6 +59,19 @@ byte *year){
   *month = bcdToDec(Wire.read());
   *year = bcdToDec(Wire.read());
 }
+
+int[] retime(){
+  int[2] tim;
+  byte minute, hour;
+  // retrieve data from DS3231
+  readDS3231time(&minute, &hour);
+  // send it to the serial monitor
+  hour = (int)hour;
+  minute=(int)minute;
+  tim[0]=hour;
+  tim[1]=minute;
+  return tim;
+  }
 
 void displayTime(){
   byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
@@ -208,8 +230,11 @@ void displayTemp(){
 
 void setup() {
   // put your setup code here, to run once:
+  Wire.begin();
       lcd.init(); //initialize the lcd
       lcd.backlight(); //open the backlight
+      pinMode(sensor, INPUT);
+      rtc.begin();
       Serial.begin(9600);
       delay(500);//Delay to let system boot
       Serial.println("DHT11 Humidity & temperature Sensor\n\n");
@@ -219,7 +244,25 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-    
+      val = digitalRead(sensor);   // read sensor value
+    while(val!=HIGH){
+      int hourinit=retime()[0];
+      int minuteinit=retime()[1];
+      fx++;
+      temp+=DHT.temperature;
+      humidity+=DHT.humidity;
+      delay(5000);
+    }
+    int hourfin=retime()[0];
+    int minutefin=retime()[1];
+    x++;
+    arrtemp[x] = temp/fx;
+    arrhumid[x] = humidity/fx;
+    arrtimhour[x] =hourfin-hourinit ;
+    arrtimmin[x] = minutefin-minuteinit;
+    temp=0;
+    humidity=0;
+    fx=0;
     displayTime();
     displayTemp();
     delay(1000);
