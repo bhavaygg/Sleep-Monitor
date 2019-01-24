@@ -173,25 +173,8 @@ void displayTime(){
   }
 }
 
-
-void setup() {
-  // put your setup code here, to run once:
-      lcd.init(); //initialize the lcd
-      lcd.backlight(); //open the backlight
-      Serial.begin(9600);
-      delay(500);//Delay to let system boot
-      Serial.println("DHT11 Humidity & temperature Sensor\n\n");
-      delay(1000);//Wait before accessing Sensor 
-}
-
-
-void loop() {
-  // put your main code here, to run repeatedly:
+void displayTemp(){
     DHT.read11(dht_apin);
-    
-    
-    
-    
     lcd.setCursor(2,1);
     lcd.print("H");
     lcd.setCursor(3,1);
@@ -221,6 +204,23 @@ void loop() {
     Serial.print("temperature = ");
     Serial.print(DHT.temperature); 
     Serial.println("C  ");
+}
+
+void setup() {
+  // put your setup code here, to run once:
+      lcd.init(); //initialize the lcd
+      lcd.backlight(); //open the backlight
+      Serial.begin(9600);
+      delay(500);//Delay to let system boot
+      Serial.println("DHT11 Humidity & temperature Sensor\n\n");
+      delay(1000);//Wait before accessing Sensor 
+}
+
+
+void loop() {
+  // put your main code here, to run repeatedly:
+    
     displayTime();
+    displayTemp();
     delay(1000);
 }
