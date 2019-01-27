@@ -5,6 +5,8 @@
 #define dht_apin A0 // Analog Pin sensor is connected to
 dht DHT;
 LiquidCrystal_I2C lcd(0x27,16,2);
+int buttonState = 0;
+const int bPin = 5;
 int sensor = 2;
 int val = 0;                 // variable to store the sensor status (value)
 int x=0;
@@ -252,7 +254,11 @@ void setup() {
 
 
 void loop() {
-  // put your main code here, to run repeatedly:
+      buttonState = digitalRead(bPin);
+      if(buttonState == HIGH){
+        fx++;
+      }
+      if(fx == 1){
       val = digitalRead(sensor);   // read sensor value
     while(val!=HIGH){
       if(y==0){
@@ -262,6 +268,9 @@ void loop() {
       temp=DHT.temperature;
       humidity+=DHT.humidity;}
       val = digitalRead(sensor);
+      displayTime();
+    displayTemp();
+    delay(1000);
     }
     if(y==1)
     {
@@ -274,10 +283,7 @@ void loop() {
       arrtimmin[x] = minutefin-minuteinit;
       y=0;
     
-    Serial.println(arrtemp[x]);
-    Serial.println(arrhumid[x]);
-    Serial.println(arrtimhour[x]);
-    Serial.println(arrtimmin[x]);
+    
     }  
 
     
@@ -287,5 +293,13 @@ void loop() {
     fx=0;
     displayTime();
     displayTemp();
-    delay(1000);
+    delay(1000);}
+    else if(fx == 2){
+      for(int i=0;i<10;i++){
+        Serial.println(arrtemp[i]);
+    Serial.println(arrhumid[i]);
+    Serial.println(arrtimhour[i]);
+    Serial.println(arrtimmin[i]);
+      }
+    }
 }
