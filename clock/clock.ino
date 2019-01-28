@@ -15,7 +15,7 @@ void setup(){
   Serial.begin(9600);
   // set the initial time here:
   // DS3231 seconds, minutes, hours, day, date, month, year
-  //setDS3231time(0,15,13,4,23,1,19);
+  setDS3231time(0,39,14,2,28,1,19);
   lcd.init(); //initialize the lcd
   lcd.backlight(); //open the backlight 
 }

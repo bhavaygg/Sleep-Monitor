@@ -95,13 +95,10 @@ void displayTime(){
   lcd.setCursor(1,0);
   lcd.print((int)hour%10);
   // send it to the serial monitor
-  Serial.print(hour, DEC);
   // convert the byte variable to a decimal number when displayed
   lcd.setCursor(2,0);
-  Serial.print(":");
   lcd.print(":");
   if (minute<10){
-    Serial.print("0");
     lcd.setCursor(3,0);
     lcd.print("0");
     lcd.setCursor(4,0);
@@ -117,8 +114,6 @@ void displayTime(){
   lcd.setCursor(5,0);
   lcd.print(":");
   if(second<10){
-    
-    Serial.print("0");
     lcd.setCursor(6,0);
     lcd.print("0");
     lcd.setCursor(7,0);
@@ -131,25 +126,13 @@ void displayTime(){
   lcd.setCursor(7,0);
   lcd.print((int)second%10);
   }
-  Serial.print(minute, DEC);
-  Serial.print(":");
-  Serial.print(minute, DEC);
-  Serial.print(":");
-  Serial.print(dayOfMonth, DEC);
-  Serial.print("/");
-  
   lcd.setCursor(9,0);
   lcd.print((int)dayOfMonth/10);
   lcd.setCursor(10,0);
   lcd.print((int)dayOfMonth%10);
-  Serial.print(month, DEC);
-  Serial.print("/");
-  Serial.print(year, DEC);
   lcd.setCursor(12,0);
-  Serial.print(" Day of week: ");
   switch(dayOfWeek){
   case 1:
-    Serial.println("Sunday");
     lcd.print("S");
     lcd.setCursor(13,0);
     lcd.print("U");
@@ -157,7 +140,6 @@ void displayTime(){
     lcd.print("N");
     break;
   case 2:
-    Serial.println("Monday");
     lcd.print("M");
     lcd.setCursor(13,0);
     lcd.print("O");
@@ -165,7 +147,7 @@ void displayTime(){
     lcd.print("N");
     break;
   case 3:
-    Serial.println("Tuesday");
+
     lcd.print("T");
     lcd.setCursor(13,0);
     lcd.print("U");
@@ -173,7 +155,6 @@ void displayTime(){
     lcd.print("E");
     break;
   case 4:
-    Serial.println("Wednesday");
     lcd.print("W");
     lcd.setCursor(13,0);
     lcd.print("E");
@@ -181,7 +162,6 @@ void displayTime(){
     lcd.print("D");
     break;
   case 5:
-    Serial.println("Thursday");
     lcd.print("T");
     lcd.setCursor(13,0);
     lcd.print("H");
@@ -189,7 +169,6 @@ void displayTime(){
     lcd.print("U");
     break;
   case 6:
-    Serial.println("Friday");
     lcd.print("F");
     lcd.setCursor(13,0);
     lcd.print("R");
@@ -197,7 +176,6 @@ void displayTime(){
     lcd.print("I");
     break;
   case 7:
-    Serial.println("Saturday");
     lcd.print("S");
     lcd.setCursor(13,0);
     lcd.print("A");
@@ -232,12 +210,7 @@ void displayTemp(){
     lcd.print("C");
     
     
-     Serial.print("Current humidity = ");
-    Serial.print(DHT.humidity);
-    Serial.print("%  ");
-    Serial.print("temperature = ");
-    Serial.print(DHT.temperature); 
-    Serial.println("C  ");
+     
 }
 
 void setup() {
@@ -252,15 +225,6 @@ void setup() {
       delay(1000);//Wait before accessing Sensor 
 }
 
-int max(int[] arr){
-  int maxi = 0;
-  for(int i=0;i<10;i++){
-    if(arr[i]>maxi){
-      maxi = arr[i];
-    }
-  }
-  return maxi;
-}
 
 
 void loop() {
@@ -268,9 +232,12 @@ void loop() {
       if(buttonState == HIGH){
         fx++;
       }
+      displayTime();
+      displayTemp();
       if(fx == 1){
       val = digitalRead(sensor);   // read sensor value
-    while(val!=HIGH){
+    while(val!=HIGH && fx==1){
+     
       if(y==0){
       hourinit=rehour();
       minuteinit=remin();
@@ -279,8 +246,11 @@ void loop() {
       humidity+=DHT.humidity;}
       val = digitalRead(sensor);
       displayTime();
-    displayTemp();
-    delay(1000);
+      displayTemp();
+    delay(2000);
+     if(buttonState == HIGH){
+        fx++;
+      }
     }
     if(y==1)
     {
@@ -295,19 +265,40 @@ void loop() {
     }  
     temp=0;
     humidity=0;
-    displayTime();
-    displayTemp();
     delay(1000);}
     else if(fx == 2){
       delay(10000);
-      Serial.print(max(arrtimhour));
-      Serial.print("|");
-      Serial.print(max(arrtimmin));
-      Serial.print("|");
-      Serial.print(max(arrtemp));
-      Serial.print("|");
-      Serial.print(max(arrhumid));
-      }
+      int maxi = 0;
+    for(int i=0;i<10;i++){
+      if(arrtimhour[i]>maxi){
+      maxi = arrtimhour[i];
     }
-   fx=0; 
-}
+  }
+      Serial.print(maxi);
+      Serial.print("|");
+      maxi=0;
+        for(int i=0;i<10;i++){
+    if(arrtimmin[i]>maxi){
+      maxi = arrtimmin[i];
+    }
+  }
+      Serial.print(maxi);
+      Serial.print("|");
+      maxi=0;
+        for(int i=0;i<10;i++){
+    if(arrtemp[i]>maxi){
+      maxi = arrtemp[i];
+    }
+  }
+      Serial.print(maxi);
+      Serial.print("|");
+      maxi=0;
+        for(int i=0;i<10;i++){
+    if(arrhumid[i]>maxi){
+      maxi = arrhumid[i];
+    }
+  }
+      Serial.print(maxi);
+      
+    fx=0; 
+}}
