@@ -295,7 +295,6 @@ void loop() {
     }  
     temp=0;
     humidity=0;
-    fx=0;
     displayTime();
     displayTemp();
     delay(1000);}
@@ -310,4 +309,5 @@ void loop() {
       Serial.print(max(arrhumid));
       }
     }
+   fx=0; 
 }
