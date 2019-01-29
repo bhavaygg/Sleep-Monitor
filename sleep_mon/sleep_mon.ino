@@ -223,7 +223,6 @@ void setup() {
       pinMode(sensor, INPUT);
       Serial.begin(9600);
       delay(500);//Delay to let system boot
-      Serial.println("DHT11 Humidity & temperature Sensor\n\n");
       delay(1000);//Wait before accessing Sensor 
 }
 
@@ -234,14 +233,13 @@ void loop() {
       displayTime();
       displayTemp();
       if(sensorValue >=900){
-      Serial.println(1);
       fx=1;
       displayTime();
       displayTemp();
       if(fx == 1){
       val = digitalRead(sensor);   // read sensor value
     while(val!=HIGH){
-      Serial.println(2);
+    
       if(y==0){
       hourinit=rehour();
       minuteinit=remin();
@@ -251,7 +249,7 @@ void loop() {
       val = digitalRead(sensor);
       displayTime();
       displayTemp();
-    delay(2000);
+    delay(1000);
     }
     if(y==1)
     {
@@ -303,7 +301,7 @@ void loop() {
 String minstr = String(mins);
 String tempstr = String(temperature);
 String humidstr = String(humid);
-
+delay(1000);
 Serial.println("Hours: "+hourstr+" Minutes: "+minstr+" Temp(in Celsius): "+tempstr+" Humid: "+humidstr);
  fx=0;    
 }
