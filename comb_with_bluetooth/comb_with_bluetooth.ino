@@ -5,8 +5,6 @@
 #define dht_apin A0 // Analog Pin sensor is connected to
 dht DHT;
 LiquidCrystal_I2C lcd(0x27,16,2);
-int buttonState = 0;
-const int bPin = 5;
 int sensor = 2;
 int val = 0;                 // variable to store the sensor status (value)
 int x=0;
@@ -20,7 +18,7 @@ int arrtimhour[10];
 int arrtimmin[10];
 int hourinit,minuteinit,hourfin,minutefin;
 int hours,mins,temperature,humid;
-const int analogInPin = A0;
+const int analogInPin = A1;
 int sensorValue = 0; 
    
 byte decToBcd(byte val){
@@ -233,28 +231,27 @@ void setup() {
 
 void loop() {
       int sensorValue = analogRead(analogInPin);
+      displayTime();
+      displayTemp();
       if(sensorValue >=900){
-        fx++;
-      }
+      Serial.println(1);
+      fx=1;
       displayTime();
       displayTemp();
       if(fx == 1){
       val = digitalRead(sensor);   // read sensor value
-    while(val!=HIGH && fx==1){
-     
+    while(val!=HIGH){
+      Serial.println(2);
       if(y==0){
       hourinit=rehour();
       minuteinit=remin();
       y=1;
       temp=DHT.temperature;
-      humidity+=DHT.humidity;}
+      humidity=DHT.humidity;}
       val = digitalRead(sensor);
       displayTime();
       displayTemp();
     delay(2000);
-     if(sensorValue <= 100){
-        fx++;
-      }
     }
     if(y==1)
     {
@@ -266,11 +263,12 @@ void loop() {
       arrtimhour[x] =hourfin-hourinit ;
       arrtimmin[x] = minutefin-minuteinit;
       y=0;
-    }  
+    }  }
     temp=0;
     humidity=0;
-    delay(1000);}
-    else if(fx == 2){
+    delay(1000);
+    }
+   if(fx == 1 && sensorValue <=100){
       delay(10000);
       int maxi = 0;
     for(int i=0;i<10;i++){
@@ -300,13 +298,14 @@ void loop() {
     }
   }
       humid = maxi;
+  String hourstr = String(hours);
 
-String hourstr = String(hours);
 String minstr = String(mins);
 String tempstr = String(temperature);
 String humidstr = String(humid);
 
 Serial.println("Hours: "+hourstr+" Minutes: "+minstr+" Temp(in Celsius): "+tempstr+" Humid: "+humidstr);
+ fx=0;    
+}
 
-    fx=0; 
-}}
+}
