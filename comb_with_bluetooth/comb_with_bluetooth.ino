@@ -20,6 +20,9 @@ int arrtimhour[10];
 int arrtimmin[10];
 int hourinit,minuteinit,hourfin,minutefin;
 int hours,mins,temperature,humid;
+const int analogInPin = A0;
+int sensorValue = 0; 
+   
 byte decToBcd(byte val){
   return( (val/10*16) + (val%10) );
 }
@@ -229,8 +232,8 @@ void setup() {
 
 
 void loop() {
-      buttonState = digitalRead(bPin);
-      if(buttonState == HIGH){
+      int sensorValue = analogRead(analogInPin);
+      if(sensorValue >=900){
         fx++;
       }
       displayTime();
@@ -249,7 +252,7 @@ void loop() {
       displayTime();
       displayTemp();
     delay(2000);
-     if(buttonState == HIGH){
+     if(sensorValue <= 100){
         fx++;
       }
     }
