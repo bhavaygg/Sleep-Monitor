@@ -19,6 +19,7 @@ int arrhumid[10];
 int arrtimhour[10];
 int arrtimmin[10];
 int hourinit,minuteinit,hourfin,minutefin;
+int hours,mins,temperature,humid;
 byte decToBcd(byte val){
   return( (val/10*16) + (val%10) );
 }
@@ -274,31 +275,35 @@ void loop() {
       maxi = arrtimhour[i];
     }
   }
-      Serial.print(maxi);
-      Serial.print("|");
+      hours = maxi;
       maxi=0;
         for(int i=0;i<10;i++){
     if(arrtimmin[i]>maxi){
       maxi = arrtimmin[i];
     }
   }
-      Serial.print(maxi);
-      Serial.print("|");
+      mins = maxi;
       maxi=0;
         for(int i=0;i<10;i++){
     if(arrtemp[i]>maxi){
       maxi = arrtemp[i];
     }
   }
-      Serial.print(maxi);
-      Serial.print("|");
+      temperature = maxi;
       maxi=0;
         for(int i=0;i<10;i++){
     if(arrhumid[i]>maxi){
       maxi = arrhumid[i];
     }
   }
-      Serial.print(maxi);
-      
+      humid = maxi;
+
+String hourstr = String(hours);
+String minstr = String(mins);
+String tempstr = String(temperature);
+String humidstr = String(humid);
+
+Serial.println("Hours: "+hourstr+" Minutes: "+minstr+" Temp(in Celsius): "+tempstr+" Humid: "+humidstr);
+
     fx=0; 
 }}
